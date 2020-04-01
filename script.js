@@ -17,6 +17,9 @@ fetch('https://api.github.com/users/' + name)
         let avatar = json.avatar_url;
         let name = json.login;
         let bio = json.bio;
+        if (bio == null) {
+            bio = 'Информация не доступна';
+        }
         let profile =json.html_url;
         if (name) {
 
@@ -52,4 +55,4 @@ fetch('https://api.github.com/users/' + name)
         }
     })
 
-    .catch(err => alert(err + 'Информация о пользователе недоступна')); 
+      .catch(err => alert(err + 'Информация о пользователе недоступна')); 
