@@ -18,7 +18,7 @@ fetch('https://api.github.com/users/' + name)
         let name = json.login;
         let bio = json.bio;
         if (bio == null) {
-            bio = 'Информация не доступна';
+            bio = 'Информация отсутствует';
         }
         let profile =json.html_url;
         if (name) {
