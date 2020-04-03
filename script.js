@@ -11,16 +11,28 @@ let getUsername = (url) => {
 
 let name = getUsername(url)
 
-fetch('https://api.github.com/users/' + name)
-    .then(res => res.json())
-    .then(json => {
-        let avatar = json.avatar_url;
-        let name = json.login;
-        let bio = json.bio;
+let getNowDate = new Promise((resolve, reject) => {
+    let nowDate = new Date();
+    setTimeout(() => nowDate ? resolve(nowDate) : reject ('Ошибка вычисления времени'), 3000)
+  });
+
+let getUserData = fetch('https://api.github.com/users/' + name)
+
+Promise.all([getUserData, getNowDate])
+    .then(([ourUserData, ourNowDate]) => {
+        userData = ourUserData;
+        currentDate = ourNowDate;
+    })
+
+    .then(res => userData.json())
+    .then(userInfo => {
+        let avatar = userInfo.avatar_url;
+        let name = userInfo.login;
+        let bio = userInfo.bio;
         if (bio == null) {
-            bio = 'Информация недоступна';
+            bio = 'Информация отсутствует';
         }
-        let profile =json.html_url;
+        let profile = userInfo.html_url;
         if (name) {
 
             let createAvatar = () => {
@@ -46,9 +58,19 @@ fetch('https://api.github.com/users/' + name)
                 elementForLink.appendChild(elementForHeader);
             }
 
+            let createDate = () => {
+                let newCurrentDate = document.createElement('p');
+                newCurrentDate.innerHTML = currentDate;
+                document.body.appendChild(newCurrentDate);
+            }
+
+            let elementForPreloader = document.getElementById('preload');
+            elementForPreloader.classList.add('hidden');
+
             createProfile();
             createBio();
             createAvatar();
+            createDate();
         }
         else {
             alert('Информация о пользователе недоступна')
